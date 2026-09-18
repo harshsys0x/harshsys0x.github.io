@@ -1,0 +1,345 @@
+---
+const {
+  title = 'Harsh',
+  description = 'Systems, Rust & things I’m figuring out.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <link rel="icon" href="/favicon.svg" />
+
+    <style is:global>
+      @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+      :root {
+        --bg: #f5f3ee;
+        --surface: #ebe8e0;
+        --text: #171717;
+        --muted: #68655e;
+        --border: #d7d3c9;
+        --accent: #171717;
+        --code: #1c1c1c;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #111110;
+          --surface: #1a1a18;
+          --text: #eeeeea;
+          --muted: #a3a19a;
+          --border: #302f2b;
+          --accent: #eeeeea;
+          --code: #181817;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Inter, sans-serif;
+        line-height: 1.7;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .container {
+        width: min(1080px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      nav {
+        height: 82px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .logo {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        font-size: 20px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 28px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .nav-links a:hover {
+        color: var(--text);
+      }
+
+      .hero {
+        padding: 120px 0 110px;
+        max-width: 850px;
+      }
+
+      .eyebrow {
+        font-family: 'DM Mono', monospace;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        margin-bottom: 25px;
+      }
+
+      h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: clamp(52px, 8vw, 92px);
+        line-height: 0.98;
+        letter-spacing: -0.065em;
+        margin: 0;
+        max-width: 900px;
+      }
+
+      .hero p {
+        max-width: 650px;
+        margin-top: 32px;
+        font-size: 19px;
+        color: var(--muted);
+      }
+
+      .section-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid var(--border);
+        padding-top: 20px;
+        margin-bottom: 30px;
+      }
+
+      .section-heading span {
+        font-family: 'DM Mono', monospace;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+      }
+
+      .post-card {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 35px;
+        padding: 32px 0;
+        border-bottom: 1px solid var(--border);
+        transition: transform 0.2s ease;
+      }
+
+      .post-card:hover {
+        transform: translateX(6px);
+      }
+
+      .post-date {
+        font-family: 'DM Mono', monospace;
+        font-size: 12px;
+        color: var(--muted);
+        padding-top: 7px;
+      }
+
+      .post-card h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 30px;
+        letter-spacing: -0.035em;
+        margin: 0 0 10px;
+      }
+
+      .post-card p {
+        color: var(--muted);
+        margin: 0;
+      }
+
+      .tag {
+        display: inline-block;
+        margin-top: 18px;
+        margin-right: 8px;
+        padding: 5px 9px;
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        font-family: 'DM Mono', monospace;
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      footer {
+        margin-top: 120px;
+        padding: 35px 0;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* Article */
+
+      .article {
+        max-width: 760px;
+        margin: 100px auto;
+      }
+
+      .article-header {
+        margin-bottom: 70px;
+      }
+
+      .article-header h1 {
+        font-size: clamp(45px, 7vw, 72px);
+        margin-bottom: 25px;
+      }
+
+      .article-meta {
+        font-family: 'DM Mono', monospace;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .article-content {
+        font-size: 17px;
+      }
+
+      .article-content h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 32px;
+        letter-spacing: -0.04em;
+        margin-top: 70px;
+      }
+
+      .article-content h3 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 23px;
+        margin-top: 45px;
+      }
+
+      .article-content p {
+        margin: 25px 0;
+      }
+
+      .article-content a {
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+
+      .article-content code {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.9em;
+        background: var(--surface);
+        padding: 3px 6px;
+        border-radius: 3px;
+      }
+
+      .article-content pre {
+        background: var(--code);
+        color: #e8e8e3;
+        padding: 24px;
+        overflow-x: auto;
+        border-radius: 5px;
+        margin: 30px 0;
+      }
+
+      .article-content pre code {
+        background: none;
+        padding: 0;
+        font-size: 13px;
+      }
+
+      .article-content blockquote {
+        border-left: 3px solid var(--text);
+        margin: 35px 0;
+        padding-left: 22px;
+        color: var(--muted);
+      }
+
+      .article-content ul,
+      .article-content ol {
+        padding-left: 25px;
+      }
+
+      .back {
+        font-family: 'DM Mono', monospace;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .back:hover {
+        color: var(--text);
+      }
+
+      @media (max-width: 700px) {
+        .container {
+          width: min(100% - 28px, 1080px);
+        }
+
+        nav {
+          height: 70px;
+        }
+
+        .nav-links {
+          gap: 14px;
+          font-size: 12px;
+        }
+
+        .hero {
+          padding: 80px 0;
+        }
+
+        .hero p {
+          font-size: 17px;
+        }
+
+        .post-card {
+          grid-template-columns: 1fr;
+          gap: 5px;
+        }
+
+        .post-date {
+          padding-top: 0;
+        }
+
+        .article {
+          margin: 65px auto;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <nav>
+        <a class="logo" href="/">HARSH</a>
+
+        <div class="nav-links">
+          <a href="/">Writing</a>
+          <a href="/about">About</a>
+          <a href="https://github.com/harshsys0x" target="_blank">GitHub</a>
+        </div>
+      </nav>
+
+      <slot />
+
+      <footer>
+        © {new Date().getFullYear()} Harsh.
+      </footer>
+    </div>
+  </body>
+</html>

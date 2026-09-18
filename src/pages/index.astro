@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const posts = [
+  {
+    date: '2026-09-18',
+    title: 'Understanding Hazard Pointers',
+    description:
+      'What I learned while building a lightweight hazard-pointer library in Rust.',
+    href: '/posts/hazard-pointers',
+    tags: ['Rust', 'Concurrency', 'Memory'],
+  },
+];
+---
+
+<Layout
+  title="Harsh — systems, rust & things I'm figuring out"
+  description="Writing about systems programming, Rust, concurrency, memory and performance."
+>
+  <main>
+    <section class="hero">
+      <div class="eyebrow">notes from below the abstraction</div>
+
+      <h1>
+        systems, rust &<br />
+        things I'm figuring out.
+      </h1>
+
+      <p>
+        Writing about low-level software, concurrency, memory,
+        performance, and the strange parts of systems programming.
+      </p>
+    </section>
+
+    <section>
+      <div class="section-heading">
+        <span>Writing</span>
+        <span>{posts.length} post</span>
+      </div>
+
+      {posts.map((post) => (
+        <a class="post-card" href={post.href}>
+          <div class="post-date">{post.date}</div>
+
+          <div>
+            <h2>{post.title}</h2>
+
+            <p>{post.description}</p>
+
+            <div>
+              {post.tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          </div>
+        </a>
+      ))}
+    </section>
+  </main>
+</Layout>

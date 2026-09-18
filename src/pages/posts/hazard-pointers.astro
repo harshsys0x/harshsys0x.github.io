@@ -1,0 +1,140 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Understanding Hazard Pointers — Harsh"
+  description="What I learned while building a lightweight hazard-pointer library in Rust."
+>
+  <article class="article">
+
+    <a class="back" href="/">← back to writing</a>
+
+    <header class="article-header">
+      <div class="eyebrow">Rust · Concurrency · Memory</div>
+
+      <h1>Understanding Hazard Pointers</h1>
+
+      <div class="article-meta">
+        September 18, 2026 · 8 min read
+      </div>
+    </header>
+
+    <div class="article-content">
+
+      <p>
+        Hazard pointers are one of those things that look terrifying
+        until you understand the problem they're actually solving.
+      </p>
+
+      <p>
+        I started learning about them while working on
+        <a href="https://github.com/harshsys0x/haphazard">
+          haphazard
+        </a>,
+        a small Rust library for hazard-pointer based memory reclamation.
+      </p>
+
+      <h2>The problem</h2>
+
+      <p>
+        Imagine a lock-free data structure where one thread is reading
+        an object while another thread removes it.
+      </p>
+
+      <pre><code>{`Thread A                  Thread B
+
+read pointer ────────┐
+                     │
+                     │    remove object
+                     │
+                     │    free(object)
+                     │
+use pointer ─────────┘
+                     ↑
+                  use-after-free`}</code></pre>
+
+      <p>
+        The pointer itself may still contain a perfectly valid-looking
+        address. The memory behind that address is the problem.
+      </p>
+
+      <h2>What a hazard pointer does</h2>
+
+      <p>
+        A hazard pointer is essentially a public announcement:
+      </p>
+
+      <blockquote>
+        "I'm currently using this object. Please don't free it."
+      </blockquote>
+
+      <p>
+        A thread publishes the address it is about to dereference.
+        A thread removing objects can then check those published
+        addresses before reclaiming memory.
+      </p>
+
+      <h2>The basic idea</h2>
+
+      <pre><code>{`protect(pointer)
+
+    ↓
+
+publish pointer
+
+    ↓
+
+check that pointer is still valid
+
+    ↓
+
+use object safely
+
+    ↓
+
+clear hazard pointer`}</code></pre>
+
+      <p>
+        The interesting part isn't the API.
+        The interesting part is making those steps work correctly
+        when multiple CPUs are changing things at the same time.
+      </p>
+
+      <h2>Why Rust makes this interesting</h2>
+
+      <p>
+        Rust already gives us powerful guarantees around references,
+        ownership and lifetimes.
+      </p>
+
+      <p>
+        Hazard pointers live in a world where those guarantees aren't
+        enough by themselves. We are dealing with raw pointers,
+        atomics, reclamation and carefully controlled unsafe code.
+      </p>
+
+      <p>
+        That's where the learning gets interesting.
+      </p>
+
+      <h2>What I'm still figuring out</h2>
+
+      <p>
+        The more I work on this, the more I realize that lock-free
+        programming isn't mainly about writing clever atomic operations.
+      </p>
+
+      <p>
+        It's about understanding exactly what every thread is allowed
+        to observe, when those observations become visible, and when
+        memory can actually be reclaimed.
+      </p>
+
+      <p>
+        This post is the beginning of that exploration.
+      </p>
+
+    </div>
+  </article>
+</Layout>
